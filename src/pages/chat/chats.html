@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-navbar primary>
+    <ion-title>
+      Messages
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content class="chats">
+  <ion-list>
+    <ion-list-header>Chats</ion-list-header>
+    <ion-item *ngFor="let chat of chats" (click)="viewMessages(chat)">
+      <ion-avatar item-start>
+        <img [src]="chat.imageUrl">
+      </ion-avatar>
+      <h2>{{chat.groupName}}</h2>
+      <p>{{chat.lastMessage}}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>
