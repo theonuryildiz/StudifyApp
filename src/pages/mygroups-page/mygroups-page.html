@@ -1,23 +1,32 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>My Group List</ion-title>
+    <ion-title>My Team</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
   <ion-list>
     <ion-item-sliding *ngFor="let item of items" >
       <ion-item>
-        <h2>{{item.title}}</h2>
-        <p>{{item.place}} • {{item.date}}</p>
+        <h2>{{item.name}}</h2>
+        <p *ngIf ="hasGroup">{{item.totalUtility}} Utility • {{item.size}} People  • {{item.lockedd}}</p>
       </ion-item>
-      <ion-item-options side="right">
-        <button ion-button color="danger" (click)="viewTerket(item)">
+      <ion-item-options side="right" *ngIf ="hasGroup">
+      <button ion-button color="danger" (click)="viewTerket(item)">
         <ion-icon name="return-left"></ion-icon>
         Terket
       </button>
-        <button ion-button color="primary" (click)="viewBilgi(item)">
+      <button ion-button color="primary" (click)="viewBilgi(item)">
         <ion-icon name="information"></ion-icon>
         Bilgi
+      </button>
+      <button ion-button color="primary" (click)="viewLock(item)">
+        <ion-icon name="lock" *ngIf="!locked"></ion-icon>
+        <ion-icon name="unlock" *ngIf="locked"></ion-icon>
+        {{unlockButtonName}}
+      </button>
+      <button ion-button color="secondary" (click)="viewChat(item)">
+        <ion-icon name="return-left"></ion-icon>
+        Chat
       </button>
       <!-- 
         <button ion-button color="danger" (click)="delete(item)">

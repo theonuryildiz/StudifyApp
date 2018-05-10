@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, IonicPage, Events } from 'ionic-angular';
+import { NavController, IonicPage, Events, AlertController } from 'ionic-angular';
+import { ValueTransformer } from '@angular/compiler/src/util';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @IonicPage()
 @Component({
@@ -7,11 +9,76 @@ import { NavController, IonicPage, Events } from 'ionic-angular';
   templateUrl: 'main-page.html',
 })
 export class MainPage {
+
+
+  getUserData()
+  {
+    var usern = localStorage.getItem("stud-username");
+    var head = new HttpHeaders();
+    this.http.get('/api/users/'+usern, { responseType: 'text'} ).pipe().subscribe(res => {
+      var jes = JSON.parse(res);
+      console.log(jes);
+      localStorage.setItem("stud-showProfile",usern);
+      localStorage.setItem("stud-userId", jes.id.toString());
+      localStorage.setItem("stud-profilePic", jes.profilePic);
+      localStorage.setItem("stud-name", jes.name);
+      localStorage.setItem("stud-currentTeam", JSON.stringify(jes.currentTeam));
+      localStorage.setItem("stud-currentTopic", JSON.stringify(jes.currentTopic));
+    });
+
+
+    
+
+  }
+
+  constructor(public navCtrl: NavController, public events: Events, public alertCtrl: AlertController, public http: HttpClient) { 
+
+    if(localStorage.getItem("stud-userId") == "-1"){
+      this.locationSelector();
+      localStorage.setItem("stud-messages",JSON.stringify(this.messages));
+      localStorage.setItem("stud-chats",JSON.stringify(this.chats));
+      localStorage.setItem("stud-userList",JSON.stringify(this.users));
+      localStorage.setItem("stud-grouplist",JSON.stringify(this.groups));
+      localStorage.setItem("stud-requestList",JSON.stringify(this.requests));
+    }
+
+    
+  }
+
+
+  locationSelector(){
+
+    let prompt = this.alertCtrl.create({
+      title: 'Konumunuzu Seçin',
+      inputs : [
+      {
+          type:'radio',
+          label:'TOBB ETÜ',
+          value: '1'
+      },
+      {
+          type:'radio',
+          label:'Bilkent',
+          value:'0'
+      }],
+      buttons : [
+      {
+          text: "Seç",
+          handler: data => {
+            console.log(data);
+            localStorage.setItem("stud-location", data);
+            this.getUserData();
+          }
+      }]});
+      prompt.present();
+  }
+
+
   items = [
     {
       name: 'Studify Nedir',
-      description: 'Lorem ipsum dolor sit amet. You can check our repository at https://github.com/Bil496/StudifyApp',
-      imageUrl: 'https://avatars3.githubusercontent.com/u/17679464?s=460&v=4',
+      description: 'Bulunduğunuz yerde istediğiniz konuda mükemmel çalışma grupları bulmaınızı sağlayan harika bir uygulama! You can check our repository at https://github.com/Bil496/StudifyApp',
+      imageUrl: ''
     },
     {
       name: 'Nasıl Kullanılır',
@@ -22,7 +89,7 @@ export class MainPage {
       step4: '4- Karşınıza çıkan grup listesi size en uygun olan en üstte olacak şekilde sıralanmış olacaktır. Katılmak istediğiniz grubu sola kaydırıp katıl butonuna \
       tıklayın ya da bilgi butonuna basarak gruptakiler hakkında bilgi edinin.',
       step5: '5- Katıl butonuna tıkladığınızda o gruptaki her bir üyeye bildirim gidecek ve herhangi biri sizi onayladığında gruba katılmış olacaksınız.',
-      step6: '6- Katıldığınız grupları My Groups sayfasından görüntüleyebilirsiniz.',
+      step6: '6- Katıldığınız grubu My Group sayfasından görüntüleyebilirsiniz.',
       imageUrl: 'https://cdn-image.travelandleisure.com/sites/default/files/styles/964x524/public/1479487289/belgrade-serbia-fortress-WTG2017.jpg?itok=rw8c4Esh',
     },
     {
@@ -148,24 +215,83 @@ export class MainPage {
     },
   ];
 
-  constructor(public navCtrl: NavController, public events: Events) { 
-    
-    var usern: string = localStorage.getItem("stud-username");
+  chats = [{
+      chatId: 0,
+      imageUrl: 'assets/img/avatar/marty-avatar.png',
+      groupId: 0,
+      groupName: "111deyiz",
+      lastMessage: 'Hadi toplanalim'
+    },
+    {
+      chatId: 1,
+      imageUrl: 'assets/img/avatar/ian-avatar.png',
+      groupId: 2,
+      groupName: "Sabahlamali",
+      lastMessage: 'Notlari getiriyorum'
+    },
+    {
+      chatId: 2,
+      imageUrl: 'assets/img/avatar/sarah-avatar.jpg',
+      groupId: 4,
+      groupName: "Yurt Grubu",
+      lastMessage: '18.30da eve gitmem gerekiyor benim'
+    }
+  ];
 
-    console.log(usern);
-    for(var i = 0; i < this.users.length; i++)
-      if(this.users[i].username == usern){
-        localStorage.setItem("stud-userId",this.users[i].userId.toString());
-        localStorage.setItem("stud-name",this.users[i].name);
-        this.events.publish('loggedin');
-        break;
-      }
-      
-    console.log(localStorage.getItem("stud-userId"));
-    localStorage.setItem("stud-userList",JSON.stringify(this.users));
-    localStorage.setItem("stud-showProfile",localStorage.getItem("stud-userId"));
-    localStorage.setItem("stud-grouplist",JSON.stringify(this.groups));
-    localStorage.setItem("stud-requestList",JSON.stringify(this.requests));
-  }
-
+  messages = [
+    {
+      messageId: 0,
+      chatId: 0,
+      date: new Date(),
+      userId: 0,
+      username: "Onur",
+      pic: "assets/img/avatar/ian-avatar.png",
+      text: 'Nerdesiniz'
+    },
+    {
+      messageId: 1,
+      chatId: 0,
+      date: new Date(),
+      userId: 3,
+      username: "Ahmet",
+      pic: 'assets/img/avatar/marty-avatar.png',
+      text: 'Tamam'
+    },
+    {
+      messageId: 3,
+      chatId: 1,
+      date: new Date(),
+      userId: 4,
+      username: "Gorkem",
+      pic: 'assets/img/avatar/marty-avatar.png',
+      text: 'Ben de birazdan geliyorum'
+    },
+    {
+      messageId: 4,
+      chatId: 1,
+      date: new Date(),
+      userId: 0,
+      username: "Onur",
+      pic: "assets/img/avatar/ian-avatar.png",
+      text: 'Hazir misiniz'
+    },
+    {
+      messageId: 5,
+      chatId: 2,
+      date: new Date(),
+      userId: 1,
+      username: "Burak",
+      pic: "assets/img/avatar/ian-avatar.png",
+      text: 'Bahceye mi gecsek?'
+    },
+    {
+      messageId: 6,
+      chatId:2,
+      date: new Date(),
+      userId: 2,
+      username: "Fatih",
+      pic: 'assets/img/avatar/marty-avatar.png',
+      text: 'Evet!'
+    }
+  ];
 }

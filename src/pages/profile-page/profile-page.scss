@@ -1,7 +1,7 @@
 page-profile-page {
     .header-image {
-        background-image: url(../../assets/img/background/background-2.jpg);
-        height: 30vh;
+        background-image: url(../assets/img/background/background-2.jpg);
+        height: 10vh;
         background-size: cover;
         background-position: center center;
         position: relative;
@@ -20,14 +20,14 @@ page-profile-page {
         position: relative !important;
     }
     .circular {
-        width: 100px;
-        height: 100px;
+        width: 200px;
+        height: 200px;
         position: inherit;
         border-radius: 50%;
         -webkit-border-radius: 150px;
         -moz-border-radius: 150px;
         border: solid white;
-        background: url(../../assets/img/avatar/cosima-avatar.jpg) no-repeat;
+        background: url(../assets/img/avatar/cosima-avatar.jpg) no-repeat;
         background-size: 100%;
         margin-top: -70px;
         margin-left: auto;

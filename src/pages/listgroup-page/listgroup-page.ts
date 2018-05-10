@@ -14,41 +14,29 @@ import { CreateGroupPage } from '../creategroup-page/creategroup-page';
 export class ListGroupPage {
   items;
   items2;
-  constructor(public navCtrl: NavController, http: HttpClient, public alertCtrl: AlertController,
-              public modalCtrl: ModalController) {
 
-                var tId = localStorage.getItem("stud-subtopicClicked");
-                this.items2 = localStorage.getItem("stud-grouplist");
-                let st2: any = [];
-                for(var i = 0; i < this.items2.length; i++)
-                {
-                  if(this.items2[i].topicId == tId)
-                    st2.push(this.items2[i]);
-                }
-                this.items = st2;
+  getGroupList(){
+
+    var userId = localStorage.getItem("stud-userId");
+    var location = localStorage.getItem("stud-location");
+    var topic = JSON.parse(localStorage.getItem("stud-topicClicked"));
+    console.log(topic);
+    var head = new HttpHeaders();
+    this.http.get('/api/topics/'+ topic.id + '/teams', {headers: {'userId': userId}, responseType: 'text'} ).pipe().subscribe(res => {
+      var jes = JSON.parse(res);
+      console.log(jes);
+      this.items = jes;
+    });
+    
+  }
+
+  constructor(public navCtrl: NavController, public http: HttpClient, public alertCtrl: AlertController,
+              public modalCtrl: ModalController) {
 }
 
   ionViewDidEnter(){
     
-    var tId = localStorage.getItem("stud-subtopicClicked");
-    this.items2 = JSON.parse(localStorage.getItem("stud-grouplist"));
-    let st2: any = [];
-    for(var i = 0; i < this.items2.length; i++)
-    {
-      if(this.items2[i].topicId == tId)
-        st2.push(this.items2[i]);
-    }
-    this.items = st2;
-  }
-
-  delete(item) {
-    alert('Deleted ' + item.title);
-    
-    for(var i = 0; i < this.items.length; i++ )
-      if(this.items[i].id == item.id)
-        this.items.splice(item[i],1);
-    
-    localStorage.setItem("stud-grouplist",JSON.stringify(this.items));
+    this.getGroupList();
   }
 
   viewKatil(item) {
@@ -62,7 +50,8 @@ export class ListGroupPage {
   }
 
   viewBilgi(item) {
-    localStorage.setItem("stud-showgroup", JSON.stringify(item));
+    localStorage.setItem("stud-showTeam", "-1");
+    localStorage.setItem("stud-showTeamInfo",JSON.stringify(item.members));
     this.modalCtrl.create('GroupInfoModalPage', null, { cssClass: 'inset-modal' })
     .present();
   }

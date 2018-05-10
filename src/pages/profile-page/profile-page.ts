@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, IonicPage } from 'ionic-angular';
+import { HttpClient } from '@angular/common/http';
 
 
 @IonicPage()
@@ -12,11 +13,11 @@ export class ProfilePage {
   user =
   {
     name: 'Cosima Niehaus',
-    profileImage: 'assets/img/avatar/girl-avatar.png',
     coverImage: 'assets/img/background/background-5.jpg',
-    occupation: 'Designer',
+    profileImage: '',
+    occupation: 'Computer Science',
     location: 'Seattle, WA',
-    description: 'Passionate Designer. Recently focusing on developing mobile hybrid apps and web development.',
+    description: '',
     address: '27 King\'s College Cir, Toronto, ON M5S, Canada',
     phone: '555 555 555',
     email: 'cosima@niehaus.com',
@@ -24,23 +25,23 @@ export class ProfilePage {
   };
 
 
-  constructor(public navCtrl: NavController) { 
+  constructor(public navCtrl: NavController, public http: HttpClient) { 
 
-    var userId: any;
-    userId = localStorage.getItem("stud-showProfile");
-    localStorage.setItem("stud-showProfile",localStorage.getItem("stud-userId"));
-    var users = JSON.parse(localStorage.getItem("stud-userList"));
-    for(var i = 0; i < users.length; i++)
-      if(userId == users[i].userId){
-        this.user.name = users[i].name;
-        break;
-      }
+    var usern: any;
+    usern = localStorage.getItem("stud-showProfile");
+    localStorage.setItem("stud-showProfile",localStorage.getItem("stud-username"));
+
+    this.http.get('/api/users/'+usern, { responseType: 'text'} ).pipe().subscribe(res => {
+      var jes = JSON.parse(res);
+      this.user.profileImage = jes.profilePic;
+      this.user.name = jes.name;
+      this.user.email = jes.username + "@etu.edu.tr";
+    });
     
   }
 
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ProfilePage');
   }
 
 }

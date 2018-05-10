@@ -12,7 +12,7 @@
     <ion-item-sliding *ngFor="let item of items" >
       <ion-item (click)="itemTapped($event, item)">
         <h2>{{item.title}}</h2>
-        <p>{{item.place}} • {{item.date}}</p>
+        <p>{{item.subTopics.length}} Subtopics • {{item.userCount}} Users</p>
       </ion-item>
     </ion-item-sliding>
   </ion-list>

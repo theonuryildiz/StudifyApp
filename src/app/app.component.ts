@@ -48,7 +48,7 @@ export class MyApp {
 
     this.pages = [
       { title: 'Main', component: 'MainPage', active: true, icon: 'home' },
-      { title: 'My Groups', component: 'MyGroupsPage', active: false, icon: 'people' },
+      { title: 'My Group', component: 'MyGroupsPage', active: false, icon: 'people' },
       { title: 'Find Group', component: 'FindGroupPage', active: false, icon: 'search' },
       { title: 'Requests', component: 'RequestsPage', active: false, icon: 'eye' },
       { title: 'My Profile', component: 'ProfilePage', active: false, icon: 'contact' },
@@ -81,10 +81,10 @@ export class MyApp {
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
-    if(page.title  == "My Profile" || page.title  == "Find Group" || page.title == "My Groups")
+    if(page.title  == "My Profile" || page.title  == "Find Group" || page.title == "My Group" || page.title == "Requests")
       this.nav.push(page.component);
-    else
-      this.nav.push(page.component);
+    else if(page.title == "Main" || page.title == "Logout")
+      this.nav.setRoot(page.component);
     this.activePage.next(page);
   }
 

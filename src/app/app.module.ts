@@ -10,6 +10,8 @@ import { ListGroupPage } from '../pages/listgroup-page/listgroup-page';
 import { CreateGroupPage } from '../pages/creategroup-page/creategroup-page';
 import { ProfileFivePageModule } from '../pages/profile-page/profile-page.module';
 import { MainPageModule } from '../pages/main-page/main-page.module';
+import { ChatsPageModule } from '../pages/chat/chats.module';
+import { MessagesPageModule } from '../pages/chat/messages/messages.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { MainPageModule } from '../pages/main-page/main-page.module';
     IonicModule.forRoot(MyApp),
     ProfileFivePageModule,
     MainPageModule,
-    SharedModule,
+    ChatsPageModule,
+    MessagesPageModule,
+    SharedModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

@@ -12,6 +12,7 @@ export class LogoutPage {
 
   constructor(public navCtrl: NavController) { 
     localStorage.clear();
+    localStorage.setItem("stud-userId","-1");
     this.navCtrl.setRoot(LoginPage);
   }
 

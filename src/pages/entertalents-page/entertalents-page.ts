@@ -10,23 +10,17 @@ export class EnterTalentsPage {
   rootPage: any;
   topicId: any;
   allItems: any;
+  topic: any;
   title: string;
   items:any;
   constructor(public navCtrl: NavController) {
-    this.topicId = localStorage.getItem("stud-subtopicClicked");
-    this.title = localStorage.getItem("stud-topicClicked");
-
-    this.allItems = JSON.parse(localStorage.getItem("stud-topiclist"));
-    for(var i = 0; i< this.allItems.length; i++)
-      if(this.allItems[i].id == this.topicId)
-      {
-        this.items = this.allItems[i].subTopics;
-        break;
-      }
+    this.topic = JSON.parse(localStorage.getItem("stud-topicClicked"));
+    this.title = this.topic.title;
+    this.items = this.topic.subTopics;
   }
 
   findClicked(){
-    console.log("find clicked");
+    console.log(this.items);
     localStorage.setItem("stud-scores",JSON.stringify(this.items));
     this.navCtrl.push(ListGroupPage);
   }

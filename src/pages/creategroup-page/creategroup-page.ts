@@ -17,8 +17,6 @@ export class CreateGroupPage {
 
 
   createClicked(){
-    console.log("topicname " + this.groupName);
-    console.log("desc " + this.place);
 
     var items = JSON.parse(localStorage.getItem("stud-grouplist"));
     var newItem = {
@@ -29,6 +27,7 @@ export class CreateGroupPage {
       date: "20.10",
       users: [ localStorage.getItem("stud-userId") ]
     };
+
     items.push(newItem);
     localStorage.setItem("stud-grouplist",JSON.stringify(items));
 

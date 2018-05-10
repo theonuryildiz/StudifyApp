@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController, IonicPage, NavController } from 'ionic-angular';
 import { ProfilePage } from '../../profile-page/profile-page';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @IonicPage()
 @Component({
@@ -8,18 +9,32 @@ import { ProfilePage } from '../../profile-page/profile-page';
   templateUrl: 'groupinfo-modal.html'
 })
 export class GroupInfoModalPage {
-  myParam: string;
   items: any;
   rootPage: any;
+  getUserList(){
+    
+    var usern = localStorage.getItem("stud-username");
+    var userId = localStorage.getItem("stud-showTeam");
+    if(userId != "-1"){
+      var head = new HttpHeaders();
+      this.http.get('/api/team', {headers: {'userId': userId}, responseType: 'text'} ).pipe().subscribe(res => {
+        var jes = JSON.parse(res);
+        console.log(jes);
+        this.items = jes.members;
+      });
+    }
+    else
+    {
+      this.items = JSON.parse(localStorage.getItem("stud-showTeamInfo"));
+    }
+
+  }
 
   constructor(
-    public viewCtrl: ViewController, params: NavParams, public navCtrl: NavController
+    public viewCtrl: ViewController, params: NavParams, public navCtrl: NavController, public http: HttpClient
   ) {
-    this.myParam = params.get('myParam');
-    var group: any;
-    var users: any;
-    group = JSON.parse(localStorage.getItem("stud-showgroup"));
-    users = JSON.parse(localStorage.getItem("stud-userList"));
+    this.getUserList();
+    /*
     let items2:any = [];
     group = group.users;
     for(var i = 0; i < group.length; i++)
@@ -32,6 +47,7 @@ export class GroupInfoModalPage {
       }
     
     this.items = items2;
+    */
   }
 
   dismiss() {
@@ -39,7 +55,7 @@ export class GroupInfoModalPage {
   }
 
   userClicked(item){
-    localStorage.setItem("stud-showProfile", item.userId);
+    localStorage.setItem("stud-showProfile", item.username);
     this.navCtrl.push(ProfilePage);
   }
 

@@ -4,6 +4,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HttpModule, ResponseType } from '@angular/http';
 import { map } from 'rxjs/operators';
+import { ChatsPage } from '../chat/chats';
+import { MessagesPage } from '../chat/messages/messages';
+
 
 @IonicPage()
 @Component({
@@ -13,37 +16,47 @@ import { map } from 'rxjs/operators';
 export class MyGroupsPage {
   items;
   items2;
-  groups;
+  group;
+  hasGroup;
+  locked;
+  unlockButtonName;
+  unlockButtonIcon;
   constructor(public navCtrl: NavController, http: HttpClient, public alertCtrl: AlertController,public modalCtrl: ModalController) {
-
-      var userId = localStorage.getItem("stud-userId");
-      this.groups = JSON.parse(localStorage.getItem("stud-grouplist"));
-
-      var st2:any = [];
-
-      for(var i = 0; i < this.groups.length; i++)
-                for(var j = 0; j < this.groups[i].users.length; j++)
-                  if(userId == this.groups[i].users[j]){
-                    st2.push(this.groups[i]);
-                    break;
-                  }
-              
-      this.items = st2;
   }
 
   ionViewDidEnter(){
     
-      var userId = localStorage.getItem("stud-userId");
-      this.groups = JSON.parse(localStorage.getItem("stud-grouplist"));
-      var st2: any = [];
-      for(var i = 0; i < this.groups.length; i++)
-                for(var j = 0; j < this.groups[i].users.length; j++)
-                  if(userId == this.groups[i].users[j]){
-                    st2.push(this.groups[i]);
-                    break;
-                  }
-              
+    var userId = localStorage.getItem("stud-userId");
+    if(!localStorage.getItem("stud-currentTeam") || localStorage.getItem("stud-currentTeam") == ""){
+      var item = {
+        name: "Group Not Found",
+      }
+      
+      var st2:any = [];
+      st2.push(item);
       this.items = st2;
+      this.hasGroup = false;
+      return;
+    }
+    this.hasGroup = true;
+    this.group = JSON.parse(localStorage.getItem("stud-currentTeam"));
+    if(this.group.locked){
+      this.group.lockedd = "Locked";
+      this.unlockButtonName = "Unlock";
+      this.unlockButtonIcon = "unlock";
+      this.locked = true;
+    }
+    else{
+      this.group.lockedd = "Unlocked";
+      this.unlockButtonName = "Lock";
+      this.unlockButtonIcon = "lock";
+      this.locked = false;
+    } 
+    var st2:any = [];
+    st2.push(this.group);
+
+    console.log(st2);
+    this.items = st2;
   }
 
   viewTerket(item) {
@@ -57,24 +70,35 @@ export class MyGroupsPage {
 
     var userId = localStorage.getItem("stud-userId");
 
-    for(var i = 0; i < this.groups.length; i++ )
-      if(this.groups[i].id == item.id)
-        for(var j = 0; j < this.groups[i].users.length; j++)
-          if(this.groups[i].users[j] == userId){
-            this.groups[i].users.splice(j,1); i = this.groups.length; break;
-          }
-    
-    localStorage.setItem("stud-grouplist",JSON.stringify(this.groups));
+    localStorage.setItem("stud-currentTeam","");
     this.ionViewDidEnter();
   }
 
   viewBilgi(item) {
-    console.log(item);
-    localStorage.setItem("stud-showgroup", JSON.stringify(item));
+    localStorage.setItem("stud-showTeam",localStorage.getItem("stud-userId"));
     this.modalCtrl.create('GroupInfoModalPage', null, { cssClass: 'inset-modal' })
     .present();
   }
 
+  viewLock(item){
+    if(this.unlockButtonName == "Lock"){
+      this.unlockButtonName = "Unlock";
+      this.group.lockedd = "Locked";
+      this.unlockButtonIcon = "unlock";
+      this.locked = true;
+    }
+    else{
+      this.unlockButtonName = "Lock";
+      this.group.lockedd = "Unlocked";
+      this.unlockButtonIcon = "lock";
+      this.locked = false;
+    }
+  }
+
+  viewChat(item) {
+    localStorage.setItem("stud-showchat", JSON.stringify(item));
+    this.navCtrl.push(MessagesPage);
+  }
 }
 
 
